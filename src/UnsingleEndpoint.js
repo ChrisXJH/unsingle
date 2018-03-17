@@ -51,7 +51,18 @@ function validateSendMessageRequest(req) {
 }
 
 function validateUpdateEventRequest(req) {
-    if (req == null || req.body == null || req.params == null || req.params.eventId == null) return null;
+    if (req == null || req.body == null || req.params == null || req.params.eventId == null) {
+        return null;
+    }
+    else {
+        var returnReq = req.body;
+        returnReq.eventId = req.params.eventId;
+        return returnReq;
+    }
+}
+
+function validateStartSessionRequest(req) {
+    if (req == null || req.body == null || req.body.userName == null || req.body.password == null) return null;
     else return req.body;
 }
 
@@ -68,6 +79,26 @@ router.post('/account', function (req, res) {
             var password = validatedReq.password;
 
             var response = unsingleBusiness.registerAccount(username, password);
+            res.status(response.getStatus()).send(response.getBody());
+
+        } else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
+
+router.post('/startSession', function (req, res) {
+    try {
+        var validatedReq = validateStartSessionRequest(req);
+
+        if (validatedReq != null) {
+            var userName = validatedReq.userName;
+            var password = validatedReq.password;
+
+            var response = unsingleBusiness.startSession(userName, password);
             res.status(response.getStatus()).send(response.getBody());
 
         } else {

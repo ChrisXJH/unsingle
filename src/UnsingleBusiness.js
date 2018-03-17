@@ -40,4 +40,8 @@ UnsingleBusiness.updateEventById = function (eventId, location, startTime, endTi
     return businessResponse.builder().status(NO_CONTENT).build();
 }
 
+UnsingleBusiness.startSession = function (username, password) {
+    return businessResponse.builder().status(OK).body({"sessionId": "12345"}).build();
+}
+
 module.exports = UnsingleBusiness;
