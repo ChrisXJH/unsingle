@@ -66,6 +66,10 @@ function validateStartSessionRequest(req) {
     else return req.body;
 }
 
+function vailidateMatchRequest(req) {
+    return req.body;
+}
+
 // Implement endpoints here
 
 // Account
@@ -253,6 +257,26 @@ router.get('/account/:accountId/message', function (req, res) {
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 });
+
+router.post('/match', function (req, res) {
+    try {
+        var validatedReq = vailidateMatchRequest(req);
+        if (validatedReq != null) {
+            var accountId = validatedReq.accountId;
+            var accountId = validatedReq.eventId;
+
+            var response = unsingleBusiness.submitMatchRequest(accountId, eventId);
+            res.status(response.getStatus()).send(response.getBody());
+        }
+        else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
+
 
 
 module.exports = router;

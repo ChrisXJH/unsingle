@@ -80,4 +80,8 @@ UnsingleBusiness.startSession = function (username, password) {
     return businessResponse.builder().status(OK).body({"sessionId": "12345"}).build();
 }
 
+UnsingleBusiness.submitMatchRequest = function (acocunId, eventId, callback) {
+
+}
+
 module.exports = UnsingleBusiness;
