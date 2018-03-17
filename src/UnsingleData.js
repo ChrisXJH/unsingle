@@ -28,6 +28,15 @@ UnsingleData.disconnect = () => {
   }
 };
 
+
+
+
+
+
+
+
+
+
 UnsingleData.getAccountById = (id, successCallback, failCallback) => {
   try{
     yichiDb.collection(yichiDbAccount).find({
@@ -37,6 +46,16 @@ UnsingleData.getAccountById = (id, successCallback, failCallback) => {
     if(err) throw err;
   }
 };
+
+
+
+
+
+
+
+
+
+
 
 UnsingleData.getAccountByUsername = (username, successCallback, failCallback) => {
   try{
@@ -127,7 +146,7 @@ UnsingleData.createAccount = (username, password, gender, callback) => {
   yichiDb.collection(yichiDbAccount).insertOne({ username, password, gender }, callback);
 };
 
-UnsingleData.createEvent = (title, start_time, end_time, description, location, owner, callback) => {
+UnsingleData.createEvent = (title, location, start_time, end_time, description, owner, callback) => {
   yichiDb.collection(yichiDbEvent).insertOne({ title, start_time, end_time, description, location, owner }, callback);
 };
 
