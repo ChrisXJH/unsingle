@@ -60,9 +60,6 @@ UnsingleData.getAccountById = (id, successCallback, failCallback) => {
 
 
 
-
-
-
 UnsingleData.getAccountByUsername = (username, successCallback, failCallback) => {
   try{
     yichiDb.collection(yichiDbAccount).find({
