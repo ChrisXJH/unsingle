@@ -60,6 +60,8 @@ UnsingleBusiness.getRecentEvents = function (callback) {
     }
 };
 
+
+
 UnsingleBusiness.getEventById = function (eventId) {
     return businessResponse.builder().status(OK).body({"title": "midterm"}).build();
 };
