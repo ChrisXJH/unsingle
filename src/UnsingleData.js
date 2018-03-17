@@ -1,11 +1,17 @@
 const {MongoClient, ObjectID} = require('mongodb');
+
 var UnsingleData = {};
+
 const yichiDbAddress = 'mongodb://localhost:27017/YICHI';
 const yichiDbName = 'YICHI';
 const yichiDbAccount = 'account';
 const yichiDbEvent = 'event';
+const yichiDbMatch = 'match';
+
+
 var yichiDb;
 var yichiClient;
+
 
 UnsingleData.verify = () => yichiDb !== null;
 
@@ -149,5 +155,39 @@ UnsingleData.createAccount = (username, password, gender, callback) => {
 UnsingleData.createEvent = (title, location, start_time, end_time, description, owner, callback) => {
   yichiDb.collection(yichiDbEvent).insertOne({ title, start_time, end_time, description, location, owner }, callback);
 };
+
+
+
+// yichiDbMatch
+UnsingleData.createMatch = (userId, eventId, callback) => {
+  yichiDb.collection(yichiDbMatch).insertOne({ userId, eventId }, callback);
+};
+
+UnsingleData.getMatchById = (id, successCallback, failCallback) => {
+  try{
+    yichiDb.collection(yichiDbMatch).find({
+      _id: new ObjectID(id)
+    }).toArray().then(successCallback, failCallback);
+  } catch(err) {
+    if(err) throw err;
+  }
+};
+
+UnsingleData.getMatchByEventId = (eventId, successCallback, failCallback) => {
+  try{
+    yichiDb.collection(yichiDbMatch).find({ eventId }).toArray().then(successCallback, failCallback);
+  } catch(err) {
+    if(err) throw err;
+  }
+};
+
+UnsingleData.getMatchByUserId = (userId, successCallback, failCallback) => {
+  try{
+    yichiDb.collection(yichiDbMatch).find({ userId }).toArray().then(successCallback, failCallback);
+  } catch(err) {
+    if(err) throw err;
+  }
+};
+
 
 module.exports = UnsingleData;
