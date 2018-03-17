@@ -16,6 +16,7 @@ UnsingleBusiness.getAccountById = function (accountId) {
     return businessResponse.builder().status(OK).body({"accountId": accountId}).build();
 };
 
+
 UnsingleBusiness.createNewEvent = function (eventName, location, startTime, endTime, description) {
     return businessResponse.builder().status(OK).body({"eventId": "12345"}).build();
 };
