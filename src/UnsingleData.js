@@ -70,7 +70,7 @@ UnsingleData.getAccountByUsername = (username, successCallback, failCallback) =>
   }
 };
 
-UnsingleData.findAccountByGender = (gender, successCallback, failCallback) => {
+UnsingleData.getAccountByGender = (gender, successCallback, failCallback) => {
   try{
     yichiDb.collection(yichiDbAccount).find({gender}).toArray().then(successCallback, failCallback);
   } catch(err) {
@@ -79,7 +79,7 @@ UnsingleData.findAccountByGender = (gender, successCallback, failCallback) => {
 };
 
 
-UnsingleData.findEventByObjectID = (id, successCallback, failCallback) => {
+UnsingleData.getEventById = (id, successCallback, failCallback) => {
   try{
     yichiDb.collection(yichiDbEvent).find({ _id: new ObjectID(id) }).toArray().then(successCallback, failCallback);
   } catch(err) {
@@ -88,7 +88,7 @@ UnsingleData.findEventByObjectID = (id, successCallback, failCallback) => {
 };
 
 
-UnsingleData.findEventByTitle = (title, successCallback, failCallback) => {
+UnsingleData.getEventByTitle = (title, successCallback, failCallback) => {
   try{
     return yichiDb.collection(yichiDbEvent).find({ title }).toArray().then(callback, errCallback);
   } catch(err) {
@@ -97,7 +97,7 @@ UnsingleData.findEventByTitle = (title, successCallback, failCallback) => {
 };
 
 
-UnsingleData.findEventByStartTime = (start_time, successCallback, failCallback) => {
+UnsingleData.getEventByStartTime = (start_time, successCallback, failCallback) => {
   try{
     return yichiDb.collection(yichiDbEvent).find({ start_time }).toArray().then(callback, errCallback);
   } catch(err) {
@@ -105,7 +105,7 @@ UnsingleData.findEventByStartTime = (start_time, successCallback, failCallback) 
   }
 };
 
-UnsingleData.findEventByEndTime = (end_time, successCallback, failCallback) => {
+UnsingleData.getEventByEndTime = (end_time, successCallback, failCallback) => {
   try{
     return yichiDb.collection(yichiDbEvent).find({ end_time }).toArray().then(callback, errCallback);
   } catch(err) {
@@ -113,7 +113,7 @@ UnsingleData.findEventByEndTime = (end_time, successCallback, failCallback) => {
   }
 };
 
-UnsingleData.findEventByDescription = (description, successCallback, failCallback) => {
+UnsingleData.getEventByDescription = (description, successCallback, failCallback) => {
   try{
     return yichiDb.collection(yichiDbEvent).find({ description }).toArray().then(callback, errCallback);
   } catch(err) {
@@ -121,7 +121,7 @@ UnsingleData.findEventByDescription = (description, successCallback, failCallbac
   }
 };
 
-UnsingleData.findEventByLocation = (location, successCallback, failCallback) => {
+UnsingleData.getEventByLocation = (location, successCallback, failCallback) => {
   try{
     return yichiDb.collection(yichiDbEvent).find({ location }).toArray().then(callback, errCallback);
   } catch(err) {
@@ -129,7 +129,7 @@ UnsingleData.findEventByLocation = (location, successCallback, failCallback) => 
   }
 };
 
-UnsingleData.findEventByOwner = (owner, successCallback, failCallback) => {
+UnsingleData.getEventByOwner = (owner, successCallback, failCallback) => {
   try{
     return yichiDb.collection(yichiDbEvent).find({ owner }).toArray().then(callback, errCallback);
   } catch(err) {

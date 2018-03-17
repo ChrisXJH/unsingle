@@ -52,7 +52,6 @@ UnsingleBusiness.getRecentEvents = function (callback) {
         unsingleData.getAllEvents(function (response) {
              callback(businessResponse.builder().status(OK).body(response).build());
         }, function () {
-
         });
     }
     else {
@@ -61,29 +60,70 @@ UnsingleBusiness.getRecentEvents = function (callback) {
 };
 
 
-
-UnsingleBusiness.getEventById = function (eventId) {
-    return businessResponse.builder().status(OK).body({"title": "midterm"}).build();
+UnsingleBusiness.getEventById = function (eventId, callback) {
+    unsingleData.getEventById(eventId, (res) => {
+      console.log(res[0]);
+        if (unsingleData.verify()) callback(businessResponse.builder().status(OK).body(res[0]).build());
+        else callback(businessResponse.builder().status(INTERNAL_SERVER_ERROR).body({"message": "INTERNAL_SERVER_ERROR"}).build())
+    },
+    () => callback(businessResponse.builder().status(NOT_FOUND).body({"message": "NOT_FOUND"}).build()));
 };
 
-UnsingleBusiness.sendMessageToUser = function (from, to, content) {
+UnsingleBusiness.submitMatchRequest = function (userId, eventId, callback) {
+  unsingleData.createMatch(userId, eventId, (err, result) => {
+      if(err) throw err;
+      console.log(result.ops[0]);
+      if (unsingleData.verify()) {
+          callback(businessResponse.builder().status(OK).body(result.ops[0]._id).build());
+      }
+      else  {
+          callback(businessResponse.builder().status(INTERNAL_SERVER_ERROR).body({"message": "INTERNAL_SERVER_ERROR"}).build());
+      }
+  });
+}
+
+UnsingleBusiness.createNewEvent = function (title, location, startTime, endTime, description, owner, callback) {
+    unsingleData.createEvent(title, location, startTime, endTime, description, owner, (err, result) => {
+        if(err) throw err;
+        console.log(result.ops[0]);
+        if (unsingleData.verify()) {
+            callback(businessResponse.builder().status(OK).body(result.ops[0]._id).build());
+        }
+        else  {
+            callback(businessResponse.builder().status(INTERNAL_SERVER_ERROR).body({"message": "INTERNAL_SERVER_ERROR"}).build());
+        }
+    });
+    // TODO: avoid duplicated user
+};
+
+
+
+
+
+
+
+
+UnsingleBusiness.sendMessageToUser = function (from, to, content) { // omit for god's sake
     return businessResponse.builder().status(NO_CONTENT).build();
 };
 
-UnsingleBusiness.getReceivedMessagesByAccountId = function (accountId) {
+
+UnsingleBusiness.getReceivedMessagesByAccountId = function (accountId) { // omit for god's sake
     return businessResponse.builder().status(OK).body([{"messageId": "12345"}, {"messageId": "45679"}]).build();
 };
 
-UnsingleBusiness.updateEventById = function (eventId, location, startTime, endTime, description) {
+
+UnsingleBusiness.updateEventById = function (eventId, location, startTime, endTime, description) { // omit for god's sake
     return businessResponse.builder().status(NO_CONTENT).build();
 }
 
-UnsingleBusiness.startSession = function (username, password) {
+UnsingleBusiness.startSession = function (username, password) { // omit for god's sake
     return businessResponse.builder().status(OK).body({"sessionId": "12345"}).build();
 }
 
-UnsingleBusiness.submitMatchRequest = function (acocunId, eventId, callback) {
 
-}
+
+
+
 
 module.exports = UnsingleBusiness;
