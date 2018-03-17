@@ -20,6 +20,7 @@ function validateGetAccountRequest(req) {
 }
 
 function validateCreateEventRequest(req) {
+    if (req == null || req.body == null) return null;
     return req.body;
 }
 
@@ -29,8 +30,8 @@ function validateGetEventRequest(req) {
 }
 
 function validateGetRecentEventsRequest(req) {
-    if (req == null || req.params == null) return null;
-    else return req.params;
+    if (req == null) return null;
+    else return req.body;
 }
 
 function validateGetReceivedMessageRequest(req) {
@@ -63,6 +64,10 @@ function validateUpdateEventRequest(req) {
 function validateStartSessionRequest(req) {
     if (req == null || req.body == null || req.body.userName == null || req.body.password == null) return null;
     else return req.body;
+}
+
+function vailidateMatchRequest(req) {
+    return req.body;
 }
 
 // Implement endpoints here
@@ -133,15 +138,14 @@ router.get('/account/:accountId', function (req, res) {
 router.post('/event', function (req, res) {
     try {
         var validatedReq = validateCreateEventRequest(req);
-        console.log(req);
         if (validatedReq != null) {
-            var eventName = validatedReq.eventName;
+            var title = validatedReq.title;
             var location = validatedReq.location != null ? validatedReq.location : '';
             var startTime = validatedReq.startTime != null ? validatedReq.startTime : '';
             var endTime = validatedReq.endTime != null ? validatedReq.endTime : '';
             var description = validatedReq.description != null ? validatedReq.description : '';
             var owner = validatedReq.owner != null ? validatedReq.owner : '';
-            unsingleBusiness.createNewEvent(eventName, location, startTime, endTime, description, owner, (response) => {
+            unsingleBusiness.createNewEvent(title, location, startTime, endTime, description, owner, (response) => {
               res.status(response.getStatus()).send(response.getBody());
             });
         }
@@ -158,8 +162,10 @@ router.get('/event', function (req, res) {
     try {
         var validatedReq = validateGetRecentEventsRequest(req);
         if (validatedReq != null) {
-            var response = unsingleBusiness.getRecentEvents();
-            res.status(response.getStatus()).send(response.getBody());
+            unsingleBusiness.getRecentEvents((response) => {
+                res.status(response.getStatus()).send(response.getBody());
+            });
+
         }
         else {
             res.status(BAD_REQUEST).send();
@@ -251,6 +257,26 @@ router.get('/account/:accountId/message', function (req, res) {
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 });
+
+router.post('/match', function (req, res) {
+    try {
+        var validatedReq = vailidateMatchRequest(req);
+        if (validatedReq != null) {
+            var accountId = validatedReq.accountId;
+            var accountId = validatedReq.eventId;
+
+            var response = unsingleBusiness.submitMatchRequest(accountId, eventId);
+            res.status(response.getStatus()).send(response.getBody());
+        }
+        else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
+
 
 
 module.exports = router;
