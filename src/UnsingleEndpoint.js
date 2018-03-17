@@ -20,8 +20,7 @@ function validateGetAccountRequest(req) {
 }
 
 function validateCreateEventRequest(req) {
-    if (req == null || req.body == null || req.body.eventName == null || req.body.startTime == null) return null;
-    else return req.body;
+    return req.body;
 }
 
 function validateGetEventRequest(req) {
@@ -73,14 +72,13 @@ function validateStartSessionRequest(req) {
 router.post('/account', function (req, res) {
     try {
         var validatedReq = validateCreateAccountRequest(req);
-
         if (validatedReq != null) {
             var username = validatedReq.username;
             var password = validatedReq.password;
-
-            var response = unsingleBusiness.registerAccount(username, password);
-            res.status(response.getStatus()).send(response.getBody());
-
+            var gender = validatedReq.gender;
+            unsingleBusiness.registerAccount(username, password, gender, (response) => {
+              res.status(response.getStatus()).send(response.getBody());
+            });
         } else {
             res.status(BAD_REQUEST).send();
         }
@@ -116,8 +114,9 @@ router.get('/account/:accountId', function (req, res) {
 
         if (validatedReq != null) {
             var accountId = validatedReq.accountId;
-            var response = unsingleBusiness.getAccountById(accountId);
-            res.status(response.getStatus()).send(response.getBody());
+            unsingleBusiness.getAccountById(accountId, (response) => {
+              res.status(response.getStatus()).send(response.getBody());
+            });
         }
         else {
             res.status(BAD_REQUEST).send();
@@ -134,16 +133,17 @@ router.get('/account/:accountId', function (req, res) {
 router.post('/event', function (req, res) {
     try {
         var validatedReq = validateCreateEventRequest(req);
-        console.log(validatedReq);
+        console.log(req);
         if (validatedReq != null) {
             var eventName = validatedReq.eventName;
             var location = validatedReq.location != null ? validatedReq.location : '';
             var startTime = validatedReq.startTime != null ? validatedReq.startTime : '';
             var endTime = validatedReq.endTime != null ? validatedReq.endTime : '';
             var description = validatedReq.description != null ? validatedReq.description : '';
-            var response = unsingleBusiness.createNewEvent(eventName, location, startTime, endTime, description);
-
-            res.status(response.getStatus()).send(response.getBody());
+            var owner = validatedReq.owner != null ? validatedReq.owner : '';
+            unsingleBusiness.createNewEvent(eventName, location, startTime, endTime, description, owner, (response) => {
+              res.status(response.getStatus()).send(response.getBody());
+            });
         }
         else {
             res.status(BAD_REQUEST).send();

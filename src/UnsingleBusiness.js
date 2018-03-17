@@ -3,23 +3,47 @@ const businessResponse = require('./BusinessResponse.js');
 
 const OK = 200;
 const NO_CONTENT = 201;
+const INTERNAL_SERVER_ERROR = 500;
+const NOT_FOUND = 404;
 
 var UnsingleBusiness = {};;
 
 // Implement business logic here
 
-UnsingleBusiness.registerAccount = function (userName, password, gender) {
-    return businessResponse.builder().status(OK).body({"accountId": "12345"}).build();
-};
-
-UnsingleBusiness.getAccountById = function (accountId) {
-    return businessResponse.builder().status(OK).body({"accountId": accountId}).build();
-};
+unsingleData.connect();
 
 
-UnsingleBusiness.createNewEvent = function (eventName, location, startTime, endTime, description) {
-    return businessResponse.builder().status(OK).body({"eventId": "12345"}).build();
+UnsingleBusiness.registerAccount = function (userName, password, gender, callback) {
+  unsingleData.createAccount(userName, password, gender, (err, result) => {
+    if(err) throw err;
+    if (unsingleData.verify()) callback(businessResponse.builder().status(OK).body(result.ops[0]._id).build());
+    else callback(businessResponse.builder().status(INTERNAL_SERVER_ERROR).body({"message": "INTERNAL_SERVER_ERROR"}).build());
+  });
+  // TODO: avoid duplicated user
 };
+
+
+UnsingleBusiness.getAccountById = function (accountId, callback) {
+  unsingleData.getAccountById(accountId, (res) => {
+    if (unsingleData.verify()) callback(businessResponse.builder().status(OK).body(res[0]).build());
+    callback(businessResponse.builder().status(INTERNAL_SERVER_ERROR).body({"message": "INTERNAL_SERVER_ERROR"}).build())
+  },
+  () => callback(businessResponse.builder().status(NOT_FOUND).body({"message": "NOT_FOUND"}).build()));
+};
+
+
+UnsingleBusiness.createNewEvent = function (eventName, location, startTime, endTime, description, owner, callback) {
+  unsingleData.createEvent(eventName, location, startTime, endTime, description, owner, (err, result) => {
+    if(err) throw err;
+    console.log(result.ops[0]);
+    if (unsingleData.verify()) {
+      callback(businessResponse.builder().status(OK).body(result.ops[0]._id).build());
+    }
+    else callback(businessResponse.builder().status(INTERNAL_SERVER_ERROR).body({"message": "INTERNAL_SERVER_ERROR"}).build());
+  });
+  // TODO: avoid duplicated user
+};
+
 
 UnsingleBusiness.getRecentEvents = function () {
     return businessResponse.builder().status(OK).body([{"eventName": "midterm"}, {"eventName": "final"}]).build();
