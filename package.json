@@ -1,0 +1,22 @@
+{
+  "name": "unsingle-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChrisXJH/unsingle-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChrisXJH/unsingle-backend/issues"
+  },
+  "homepage": "https://github.com/ChrisXJH/unsingle-backend#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
