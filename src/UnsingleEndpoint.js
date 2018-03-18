@@ -15,7 +15,7 @@ function validateCreateAccountRequest(req) {
 }
 
 function validateGetAccountRequest(req) {
-    if (req == null || req.params == null || req.params.accountId == null) return null;
+    if (req == null || req.params == null || req.params.userId == null) return null;
     else return req.params;
 }
 
@@ -35,17 +35,17 @@ function validateGetRecentEventsRequest(req) {
 }
 
 function validateGetReceivedMessageRequest(req) {
-    if (req == null || req.params == null || req.params.accountId == null) return null;
+    if (req == null || req.params == null || req.params.userId == null) return null;
     else return req.params;
 }
 
 function validateSendMessageRequest(req) {
-    if (req == null || req.params == null || req.params.accountId == null || req.body == null || req.body.fromAccountId == null || req.body.content == null) {
+    if (req == null || req.params == null || req.params.userId == null || req.body == null || req.body.fromuserId == null || req.body.content == null) {
         return null;
     }
     else {
         var returnReq = req.body;
-        returnReq.toAccountId = req.params.accountId;
+        returnReq.touserId = req.params.userId;
         return returnReq;
     }
 }
@@ -74,7 +74,7 @@ function vailidateMatchRequest(req) {
 
 // Account
 
-router.post('/account', function (req, res) {
+router.post('/account', function (req, res) { // callbacked
     try {
         var validatedReq = validateCreateAccountRequest(req);
         if (validatedReq != null) {
@@ -93,33 +93,15 @@ router.post('/account', function (req, res) {
     }
 });
 
-router.post('/startSession', function (req, res) {
-    try {
-        var validatedReq = validateStartSessionRequest(req);
 
-        if (validatedReq != null) {
-            var userName = validatedReq.userName;
-            var password = validatedReq.password;
 
-            var response = unsingleBusiness.startSession(userName, password);
-            res.status(response.getStatus()).send(response.getBody());
-
-        } else {
-            res.status(BAD_REQUEST).send();
-        }
-    } catch (e) {
-        Logger.error(e);
-        res.status(INTERNAL_SERVER_ERROR).send();
-    }
-});
-
-router.get('/account/:accountId', function (req, res) {
+router.get('/account/:userId', function (req, res) { // callbacked
     try {
         var validatedReq = validateGetAccountRequest(req);
 
         if (validatedReq != null) {
-            var accountId = validatedReq.accountId;
-            unsingleBusiness.getAccountById(accountId, (response) => {
+            var userId = validatedReq.userId;
+            unsingleBusiness.getAccountById(userId, (response) => {
               res.status(response.getStatus()).send(response.getBody());
             });
         }
@@ -135,7 +117,7 @@ router.get('/account/:accountId', function (req, res) {
 
 // Event
 
-router.post('/event', function (req, res) {
+router.post('/event', function (req, res) { // callbacked
     try {
         var validatedReq = validateCreateEventRequest(req);
         if (validatedReq != null) {
@@ -158,7 +140,7 @@ router.post('/event', function (req, res) {
     }
 });
 
-router.get('/event', function (req, res) {
+router.get('/event', function (req, res) { // callbacked
     try {
         var validatedReq = validateGetRecentEventsRequest(req);
         if (validatedReq != null) {
@@ -177,12 +159,82 @@ router.get('/event', function (req, res) {
     }
 });
 
-router.get('/event/:eventId', function (req, res) {
+router.get('/event/:eventId', function (req, res) { // callbacked
     try {
         var validatedReq = validateGetEventRequest(req);
         if (validatedReq != null) {
             var eventId = validatedReq.eventId;
-            var response = unsingleBusiness.getEventById(eventId);
+            console.log(eventId);
+            unsingleBusiness.getEventById(eventId ,(response) => {
+                res.status(response.getStatus()).send(response.getBody());
+            });
+        }
+        else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
+
+router.post('/match', function (req, res) { // callbacked
+    try {
+        var validatedReq = vailidateMatchRequest(req);
+        if (validatedReq != null) {
+            var userId = validatedReq.userId;
+            var eventId = validatedReq.eventId;
+
+            console.log(userId);
+            console.log(eventId);
+
+            unsingleBusiness.submitMatchRequest(userId, eventId, (response) => {
+                res.status(response.getStatus()).send(response.getBody());
+            });
+        }
+        else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
+
+
+
+
+router.post('/startSession', function (req, res) {
+    try {
+        var validatedReq = validateStartSessionRequest(req);
+
+        if (validatedReq != null) {
+            var userName = validatedReq.userName;
+            var password = validatedReq.password;
+
+            var response = unsingleBusiness.startSession(userName, password);
+            res.status(response.getStatus()).send(response.getBody());
+
+        } else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
+
+// Message
+
+router.post('/account/:userId/message', function (req, res) {
+    try {
+        var validatedReq = validateSendMessageRequest(req);
+        if (validatedReq != null) {
+            var fromuserId = validatedReq.fromuserId;
+            var touserId = validatedReq.touserId;
+            var content = validatedReq.content;
+            var response = unsingleBusiness.sendMessageToUser(fromuserId, touserId, content);
+
             res.status(response.getStatus()).send(response.getBody());
         }
         else {
@@ -190,11 +242,26 @@ router.get('/event/:eventId', function (req, res) {
         }
     } catch (e) {
         Logger.error(e);
-
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 });
 
+router.get('/account/:userId/message', function (req, res) {
+    try {
+        var validatedReq = validateGetReceivedMessageRequest(req);
+        if (validatedReq != null) {
+            var userId = validatedReq.userId;
+            var response = unsingleBusiness.getReceivedMessagesByuserId(userId);
+            res.status(response.getStatus()).send(response.getBody());
+        }
+        else {
+            res.status(BAD_REQUEST).send();
+        }
+    } catch (e) {
+        Logger.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
+});
 
 router.put('/event/:eventId', function (req, res) {
     try {
@@ -218,65 +285,5 @@ router.put('/event/:eventId', function (req, res) {
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 });
-
-// Message
-
-router.post('/account/:accountId/message', function (req, res) {
-    try {
-        var validatedReq = validateSendMessageRequest(req);
-        if (validatedReq != null) {
-            var fromAccountId = validatedReq.fromAccountId;
-            var toAccountId = validatedReq.toAccountId;
-            var content = validatedReq.content;
-            var response = unsingleBusiness.sendMessageToUser(fromAccountId, toAccountId, content);
-
-            res.status(response.getStatus()).send(response.getBody());
-        }
-        else {
-            res.status(BAD_REQUEST).send();
-        }
-    } catch (e) {
-        Logger.error(e);
-        res.status(INTERNAL_SERVER_ERROR).send();
-    }
-});
-
-router.get('/account/:accountId/message', function (req, res) {
-    try {
-        var validatedReq = validateGetReceivedMessageRequest(req);
-        if (validatedReq != null) {
-            var accountId = validatedReq.accountId;
-            var response = unsingleBusiness.getReceivedMessagesByAccountId(accountId);
-            res.status(response.getStatus()).send(response.getBody());
-        }
-        else {
-            res.status(BAD_REQUEST).send();
-        }
-    } catch (e) {
-        Logger.error(e);
-        res.status(INTERNAL_SERVER_ERROR).send();
-    }
-});
-
-router.post('/match', function (req, res) {
-    try {
-        var validatedReq = vailidateMatchRequest(req);
-        if (validatedReq != null) {
-            var accountId = validatedReq.accountId;
-            var accountId = validatedReq.eventId;
-
-            var response = unsingleBusiness.submitMatchRequest(accountId, eventId);
-            res.status(response.getStatus()).send(response.getBody());
-        }
-        else {
-            res.status(BAD_REQUEST).send();
-        }
-    } catch (e) {
-        Logger.error(e);
-        res.status(INTERNAL_SERVER_ERROR).send();
-    }
-});
-
-
 
 module.exports = router;
