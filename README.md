@@ -1,4 +1,4 @@
-# Unsingle Application Backend
+# Yichi Application Backend
 
 ## Install (for development)
 ```
