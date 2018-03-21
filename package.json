@@ -1,5 +1,5 @@
 {
-  "name": "unsingle-backend",
+  "name": "yichi-backend",
   "version": "1.0.0",
   "description": "",
   "main": "./src/index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ChrisXJH/unsingle-backend.git"
+    "url": "git+https://github.com/YichiApp/yichi-backend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ChrisXJH/unsingle-backend/issues"
+    "url": "https://github.com/YichiApp/yichi-backend/issues"
   },
-  "homepage": "https://github.com/ChrisXJH/unsingle-backend#readme",
+  "homepage": "https://github.com/YichiApp/yichi-backend#readme",
   "dependencies": {
     "express": "^4.16.3",
     "mongodb": "^3.0.4"
